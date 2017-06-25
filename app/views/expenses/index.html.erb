@@ -1,7 +1,13 @@
 <h1 class='expense-title'>Expenses</h1>
 
-<% if !current_user.has_role? :admin %>
-  <%= form_for @new_expense do |f| %>
+<div class="row new-expense-errors">
+  <% if flash[:error] %>
+  <%= flash[:error] %>
+  <% end %>
+</div>
+
+<%= form_for @new_expense do |f| %>
+  <div class="new-expense-container">
     <div class="row">
         <div class="col-sm-4">
           <%= f.label :description %>
@@ -17,36 +23,45 @@
     </div>
     <div class="row">
       <div class="col-sm-12 expense-submit-row">
-        <%= f.submit "Create Expense" %>
+        <%= f.submit "Create Expense", class: 'btn btn-default' %>
       </div>
     </div>
-  <% end %>
+  </div>
 <% end %>
 
 <div class="row">
-  <div class="col-sm-4">
+  <div class="col-sm-3">
     <h3>Description</h3>
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-2">
     <h3>Amount</h3>
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-3">
     <h3>Transaction Date</h3>
   </div>
 </div>
+
 <% @expenses.each do |expense| %>
   <div class="row">
     <div class="col-sm-3">
       <%= expense.description %>
     </div>
-    <div class="col-sm-3">
-      <%= expense.amount %>
+    <div class="col-sm-2">
+      <%= expense.formatted_amount %>
     </div>
     <div class="col-sm-3">
       <%= expense.transaction_date %>
     </div>
-    <div class="col-sm-1">
-      <%= link_to "Edit", edit_expense_path(expense) %>
+    <div class="col-sm-2">
+      <%= expense.user.email %>
     </div>
+    <% if expense.user == current_user %>
+      <div class="col-sm-1">
+          <%= link_to "Edit", edit_expense_path(expense) %>
+      </div>
+      <div class="col-sm-1">
+        <%= link_to "Delete", expense_path(expense), method: :delete, :data => {:confirm => 'Are you sure you want to delete expense?'} %>
+      </div>
+    <% end %>
   </div>
 <% end %>

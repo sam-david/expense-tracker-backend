@@ -1,6 +1,28 @@
 class ExpensesController < ApplicationController
   before_action :authenticate_user!
 
+  def create
+    new_expense = Expense.new(expense_params)
+    new_expense.user = current_user
+
+    if new_expense.save
+      redirect_to :expenses
+    else
+      flash[:error] = new_expense.errors.full_messages.join(', ')
+      redirect_to :expenses
+    end
+  end
+
+  def destroy
+    current_expense.destroy
+
+    redirect_to :expenses
+  end
+
+  def edit
+    @expense = current_expense
+  end
+
   def index
     if current_user.has_role? :admin
       @expenses = Expense.all
@@ -8,21 +30,7 @@ class ExpensesController < ApplicationController
       @expenses = current_user.expenses
     end
 
-    if !current_user.has_role? :admin
-      @new_expense = Expense.new
-    end
-  end
-
-  def edit
-    @expense = current_expense
-  end
-
-  def create
-    new_expense = Expense.create(expense_params)
-    new_expense.user = current_user
-    new_expense.save
-
-    redirect_to :expenses
+    @new_expense = Expense.new
   end
 
   def update
@@ -30,6 +38,7 @@ class ExpensesController < ApplicationController
 
     redirect_to :expenses
   end
+
   private
 
   def expense_params

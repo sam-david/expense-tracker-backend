@@ -1,0 +1,39 @@
+<h1 class='reports-title'>Reports</h1>
+
+<%= form_tag("/reports", method: "get") do %>
+<div class="row report-date-input-row">
+  <div class="col-sm-4">
+    <%= label_tag(:start_date, "Start Date:") %>
+    <%= date_field_tag(:start_date) %>
+  </div>
+  <div class="col-sm-4">
+    <%= label_tag(:end_date, "End Date:") %>
+    <%= date_field_tag(:end_date) %>
+  </div>
+  <div class="col-sm-4">
+    <%= submit_tag("Generate Report", class: 'btn btn-default') %>
+  </div>
+</div>
+<% end %>
+
+<div class="row report-date-row">
+  <div class="col-sm-6">
+    <h3>Start Date: <%= @start_date.strftime('%_m/%-d/%y') %></h3>
+  </div>
+  <div class="col-sm-6">
+    <h3>End Date: <%= @end_date.strftime('%_m/%-d/%y') %></h3>
+  </div>
+</div>
+
+<table class="center reports-table">
+  <tr>
+    <th>Month</th>
+    <th>Total</th>
+  </tr>
+  <% @monthly_totals.each do |month, total| %>
+    <tr>
+      <td><%= month.strftime('%m') %></td>
+      <td><%= total %> </td>
+    </tr>
+  <% end %>
+</table>

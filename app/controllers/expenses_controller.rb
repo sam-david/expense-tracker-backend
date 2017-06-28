@@ -1,15 +1,15 @@
 class ExpensesController < ApplicationController
   before_action :authenticate_user!
+  # before_action :authenticate_current_user
 
   def create
     new_expense = Expense.new(expense_params)
     new_expense.user = current_user
 
     if new_expense.save
-      redirect_to :expenses
+      render json: new_expense
     else
-      flash[:error] = new_expense.errors.full_messages.join(', ')
-      redirect_to :expenses
+      render json: { error: new_expense.errors.full_messages.join(', ') }
     end
   end
 
@@ -25,12 +25,12 @@ class ExpensesController < ApplicationController
 
   def index
     if current_user.has_role? :admin
-      @expenses = Expense.all
+      expenses = Expense.all
     else
-      @expenses = current_user.expenses
+      expenses = current_user.expenses
     end
 
-    @new_expense = Expense.new
+    render json: { expenses: expenses.order(:transaction_date) }
   end
 
   def update

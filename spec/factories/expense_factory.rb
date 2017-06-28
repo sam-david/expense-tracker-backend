@@ -3,7 +3,7 @@ FactoryGirl.define do
     association :user, factory: :user
 
     amount Faker::Number.decimal(2)
-    description { Faker::Lorem.sentences(1) }
+    description { Faker::Lorem.sentences(1)[0] }
     transaction_date { DateTime.now }
   end
 end

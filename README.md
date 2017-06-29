@@ -1,24 +1,11 @@
-# README
+# ExpenseTracker : Backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project is the backend server developed for the Gigster coding challenge.
 
-Things you may want to cover:
+## Running server
 
-* Ruby version
+Run `rails server` to start server. Use frontend client to interface with backend after starting server.
 
-* System dependencies
+## Testing
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Run `rspec spec`. Note: Tests are WIP as controllers were altered from Rails view controllers to API. Responses need to be handled differently in testing.

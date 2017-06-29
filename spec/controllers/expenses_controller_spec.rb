@@ -3,13 +3,17 @@ require 'rails_helper'
 RSpec.describe ExpensesController, :type => :controller do
   before(:each) do
     @request.env["devise.mapping"] = Devise.mappings[:user]
-    user = FactoryGirl.create(:user)
-    sign_in user
+    @user = FactoryGirl.create(:user)
+    sign_in @user
   end
 
   context "GET new" do
     it "assigns a blank expense on index page" do
+      @user.expenses << create(:expense)
       get :index
+
+      json = JSON.parse(response.body)
+      expect(json['expenses'].length).to eq(1)
       expect(assigns(:new_expense)).to be_a_new(Expense)
     end
   end
@@ -23,12 +27,11 @@ RSpec.describe ExpensesController, :type => :controller do
           transaction_date: "2014-12-31"
         }
       }
-      
+
       expect do
         post :create, params
       end.to change(Expense, :count)
       expect(flash[:error]).to_not be_present
-      expect(response).to redirect_to(expenses_path)
     end
 
     it "raises an error if missing amount param" do
@@ -39,8 +42,8 @@ RSpec.describe ExpensesController, :type => :controller do
         }
       }
       post :create, params
+      binding.pry
       expect(flash[:error]).to be_present
-      expect(response).to redirect_to(expenses_path)
     end
 
     it "raises an error if missing description param" do
@@ -52,7 +55,6 @@ RSpec.describe ExpensesController, :type => :controller do
       }
       post :create, params
       expect(flash[:error]).to be_present
-      expect(response).to redirect_to(expenses_path)
     end
 
     it "raises an error if missing transaction_date param" do
@@ -64,7 +66,6 @@ RSpec.describe ExpensesController, :type => :controller do
       }
       post :create, params
       expect(flash[:error]).to be_present
-      expect(response).to redirect_to(expenses_path)
     end
 
   end
@@ -80,7 +81,6 @@ RSpec.describe ExpensesController, :type => :controller do
       expect do
         delete :destroy, params
       end.to change(Expense, :count)
-      expect(response).to redirect_to(expenses_path)
     end
 
     it "raises error when invalid id provided" do
@@ -109,7 +109,6 @@ RSpec.describe ExpensesController, :type => :controller do
 
       put :update, params
       expect(expense.reload.amount).to eql(test_amount)
-      expect(response).to redirect_to(expenses_path)
     end
   end
 

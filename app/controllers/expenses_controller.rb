@@ -1,6 +1,5 @@
 class ExpensesController < ApplicationController
   before_action :authenticate_user!
-  # before_action :authenticate_current_user
 
   def create
     new_expense = Expense.new(expense_params)

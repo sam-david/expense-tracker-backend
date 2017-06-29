@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include DeviseTokenAuth::Concerns::SetUserByToken
-  protect_from_forgery with: :null_session
+  protect_from_forgery # with: :null_session
 
   # def authenticate_current_user
   #   head :unauthorized if get_current_user.nil?
